@@ -1,0 +1,347 @@
+/* 3단계 고르기 게임 (games/choice.js, visuals.js, savanna/trace.js) */
+.s3q {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3cqh;
+  height: 100%;
+}
+.s3-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2cqh;
+}
+
+/* 그림 여러 개 (조개·물고기·사과·달걀) */
+.s3-pics {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1cqh;
+  max-width: 100cqh;
+}
+.s3-pics img {
+  width: 12cqh;
+  height: 12cqh;
+  object-fit: contain;
+}
+.s3-pair .s3-pics {
+  max-width: 54cqh;
+}
+/* 빠지는 것: 잠시 다 보여 준 뒤 옆으로 헤엄쳐 사라진다 */
+.s3-pics img.gone {
+  animation: s3-leave 1.2s ease-in 1.4s forwards;
+}
+@keyframes s3-leave {
+  to {
+    opacity: 0;
+    transform: translateX(25cqh);
+  }
+}
+.s3-pair {
+  display: flex;
+  align-items: center;
+  gap: 3cqh;
+}
+.s3-sign {
+  font-size: 12cqh;
+  font-weight: 400;
+  color: var(--ink);
+}
+
+/* 10개 묶음 + 낱개 (눌러서 센다) */
+.s3-bundles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 2cqh;
+  max-width: 150cqh;
+}
+.s3-ten {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, 9cqh);
+  gap: 0.4cqh;
+  padding: 1cqh;
+  background: rgb(255 255 255 / 75%);
+  border: 0.5cqh dashed var(--ink);
+  border-radius: 2cqh;
+}
+.s3-ten img,
+.s3-one img {
+  width: 9cqh;
+  height: 9cqh;
+  object-fit: contain;
+}
+.s3-bundles.many .s3-ten {
+  grid-template-columns: repeat(5, 6cqh);
+}
+.s3-bundles.many img {
+  width: 6cqh;
+  height: 6cqh;
+}
+.s3-loose {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8cqh;
+  max-width: 52cqh;
+}
+.s3-one {
+  position: relative;
+  padding: 0.5cqh;
+  border-radius: 50%;
+}
+.s3-ten.c,
+.s3-one.c {
+  background: #fff3b0;
+}
+.s3-ten .num,
+.s3-one .num {
+  position: absolute;
+  top: -2cqh;
+  right: -2cqh;
+}
+
+/* 큰 글씨, 숫자 카드 */
+.s3-big {
+  font-size: 10cqh;
+  line-height: 1.1;
+  color: var(--ink);
+  background: rgb(255 255 255 / 80%);
+  border-radius: 2cqh;
+  padding: 0.5cqh 3cqh;
+}
+.s3-card {
+  font-size: 22cqh;
+  line-height: 1;
+  color: var(--ink);
+  background: var(--card);
+  border: 0.6cqh solid var(--ink);
+  border-radius: 3cqh;
+  padding: 1cqh 6cqh 2cqh;
+}
+
+/* 도토리 모으기: 빈 칸 */
+.s3-slots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.2cqh;
+  max-width: 150cqh;
+}
+.s3-slots i {
+  width: 14cqh;
+  height: 14cqh;
+  background: rgb(255 255 255 / 70%);
+  border: 0.5cqh dashed var(--ink);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.s3-slots img {
+  width: 12cqh;
+  height: 12cqh;
+}
+
+/* 다람쥐 나누기: 나무 위에 도토리 */
+.s3-tree {
+  position: relative;
+  width: 40cqh;
+  height: 40cqh;
+}
+.s3-tree > img {
+  width: 100%;
+  height: 100%;
+}
+.s3-crown {
+  position: absolute;
+  inset: 3cqh 4cqh auto;
+  height: 22cqh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.s3-crown .s3-pics {
+  max-width: 32cqh;
+  gap: 0.6cqh;
+}
+.s3-crown .s3-pics img {
+  width: 9cqh;
+  height: 9cqh;
+}
+
+/* 10 짝꿍: 10칸 점 그림 */
+.s3-frame {
+  display: grid;
+  grid-template-columns: repeat(5, 8cqh);
+  gap: 1.2cqh;
+  padding: 1.5cqh;
+  background: #fff;
+  border: 0.5cqh solid var(--ink);
+  border-radius: 2cqh;
+}
+.s3-frame i {
+  width: 8cqh;
+  height: 8cqh;
+  border-radius: 50%;
+  border: 0.4cqh solid #d6c9b0;
+  box-sizing: border-box;
+}
+.s3-frame i.f {
+  background: var(--coral);
+  border-color: var(--ink);
+}
+.s3-frame i.add {
+  background: #4aa8ff;
+  border-color: var(--ink);
+}
+
+/* 숫자 칸 줄 (하나 큰 수) */
+.s3-strip {
+  display: flex;
+  gap: 2.5cqh;
+  margin-bottom: 6cqh; /* 아래 보기와 헷갈리지 않게 띄운다 */
+}
+.s3-cell {
+  min-width: 26cqh;
+  padding: 1cqh 2cqh 2cqh;
+  background: var(--card);
+  border: 0.6cqh solid var(--ink);
+  border-radius: 2.5cqh;
+  text-align: center;
+}
+.s3-cell b {
+  font-size: 18cqh;
+  line-height: 1;
+  font-weight: 400;
+  color: var(--ink);
+}
+.s3-cell.q b {
+  color: #e0563a;
+}
+
+/* 발자국: 왼쪽에서 오른쪽으로 걸어가는 모양 (2단계와 같음) */
+.s3-steprow {
+  display: flex;
+  justify-content: center;
+  gap: 1cqh;
+  margin: 6cqh 0;
+}
+.s3-step {
+  position: relative;
+  width: 22cqh;
+  height: 27cqh;
+  transform: translateY(-5cqh);
+}
+.s3-step:nth-child(even) {
+  transform: translateY(5cqh);
+}
+.s3-step img {
+  width: 100%;
+  height: 100%;
+  transform: rotate(90deg) scale(0.9);
+}
+.s3-step:nth-child(even) img {
+  transform: rotate(90deg) scale(0.9) scaleX(-1);
+}
+.s3-step b {
+  position: absolute;
+  inset: 9cqh 0 auto;
+  text-align: center;
+  line-height: 1;
+  font-weight: 400;
+  font-size: 9cqh;
+  color: #fff;
+  -webkit-text-stroke: 0.45cqh var(--ink);
+  paint-order: stroke fill;
+}
+.s3-step.q b {
+  color: var(--sun);
+}
+
+/* 1~50 숫자판 */
+.s3-board {
+  display: grid;
+  grid-template-columns: repeat(10, 7cqh);
+  gap: 0.5cqh;
+  padding: 1cqh;
+  background: #fff;
+  border: 0.5cqh solid var(--ink);
+  border-radius: 2cqh;
+}
+.s3-board span {
+  height: 7cqh;
+  display: grid;
+  place-items: center;
+  font-size: 4cqh;
+  background: var(--card);
+  border-radius: 1cqh;
+  color: var(--ink);
+}
+.s3-board .on {
+  background: #ffd84d;
+}
+.s3-board .q {
+  background: #ffe1d6;
+  color: #e0563a;
+}
+
+/* 누가 더 많아: 하얀 판에 검은 테두리 */
+.s3-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5cqh;
+  min-width: 46cqh;
+  padding: 2cqh;
+  background: #fff;
+  border: 0.6cqh solid var(--ink);
+  border-radius: 3cqh;
+}
+.s3-side > img {
+  height: 18cqh;
+}
+.s3-side .s3-bundles {
+  max-width: 58cqh;
+  gap: 1.5cqh;
+}
+.s3-side .tf {
+  grid-template-columns: repeat(5, 3.6cqh);
+}
+.s3-side .tf i {
+  width: 3.6cqh;
+  height: 3.6cqh;
+}
+
+/* 식 보기 버튼 */
+.opts.wide .opt {
+  width: auto;
+  padding: 1.5cqh 2cqh 2cqh;
+}
+.opts.wide {
+  gap: 2cqh;
+}
+.opts.wide .opt b {
+  font-size: 5.5cqh;
+  white-space: nowrap;
+}
+
+/* 두 자리 따라 쓰기 (모양은 villages.css의 선 긋기 .lineq를 함께 쓴다) */
+.s3-trace.lineq {
+  width: auto;
+  height: 80cqh;
+  max-width: 100%;
+}
+.s3-trace .lbed {
+  stroke-width: 16;
+}
+.s3-trace .lguide {
+  stroke-width: 2.4;
+  stroke-dasharray: 0.1 5;
+}
+.s3-trace .lfill {
+  stroke-width: 9;
+}

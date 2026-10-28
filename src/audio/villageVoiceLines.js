@@ -7,8 +7,8 @@ import { VILLAGES, previousVillage, nextVillage } from '../villages/index.js';
 
 const range = (a, b, step = 1) => Array.from({ length: Math.floor((b - a) / step) + 1 }, (_, i) => a + i * step);
 const line = (group, id, text) => ({ group, id, text });
-const MAX_BALLOON = 10; // 풍선 터뜨리기
-const MAX_BLOW = 10; // 풍선 불기
+const BALLOON_MIN = 11; // 풍선 숫자 찾기 (3단계: 11~50)
+const BALLOON_MAX = 50;
 
 function villageLines() {
   const later = VILLAGES.slice(1);
@@ -25,22 +25,9 @@ function villageLines() {
 function balloonLines() {
   const g = '풍선';
   return [
-    ...range(1, MAX_BALLOON).map((n) => line(g, `balloon-q-${n}`, V.balloonPrompt(n))),
+    ...range(BALLOON_MIN, BALLOON_MAX).map((n) => line(g, `balloon-q-${n}`, V.balloonPrompt(n))),
     line(g, 'balloon-hint', V.BALLOON_HINT),
-    ...range(1, MAX_BALLOON).map((n) => line(g, `balloon-hint-${n}`, V.balloonHintEnd(n))),
-    ...range(1, MAX_BLOW).map((n) => line(g, `blow-q-${n}`, V.blowPrompt(n))),
-    line(g, 'blow-hint', V.BLOW_HINT),
-  ];
-}
-
-function compareLines() {
-  const g = '많다·적다';
-  return [
-    line(g, 'compare-more', V.SEA_MORE),
-    line(g, 'compare-fewer', V.SEA_FEWER),
-    line(g, 'pair-hint', V.PAIR_HINT),
-    line(g, 'pair-hint-more', V.PAIR_HINT_MORE),
-    line(g, 'pair-hint-fewer', V.PAIR_HINT_FEWER),
+    ...range(BALLOON_MIN, BALLOON_MAX).map((n) => line(g, `balloon-hint-${n}`, V.balloonHintEnd(n))),
   ];
 }
 
@@ -48,9 +35,6 @@ function compareLines() {
 function lineLines() {
   const g = '선 긋기';
   return [
-    line(g, 'line-road-q', V.LINE_ROAD_PROMPT),
-    line(g, 'line-curvy-q', V.LINE_CURVY_PROMPT),
-    line(g, 'line-zigzag-q', V.LINE_ZIGZAG_PROMPT),
     line(g, 'line-start-hint', V.LINE_START_HINT),
     line(g, 'line-idle-hint', V.LINE_IDLE_HINT),
   ];
@@ -80,5 +64,5 @@ function stickerLines() {
 }
 
 export const villageVoiceLines = () => [
-  ...villageLines(), ...balloonLines(), ...compareLines(), ...lineLines(), ...stickerLines(),
+  ...villageLines(), ...balloonLines(), ...lineLines(), ...stickerLines(),
 ];

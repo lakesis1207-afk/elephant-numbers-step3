@@ -6,7 +6,7 @@ import { pickNumber } from '@공통/games/logic.js';
 import { pickHandler, replayClass } from '@공통/games/widgets.js';
 import { buildPath, pointAt, startTrace, pressTrace, moveTrace, releaseTrace, isDone } from '../lineTrace.js';
 import { PICK_PRAISE } from '../choice.js';
-import { josa } from '../say.js';
+import { tracePrompt } from '../../audio/step3Script.js';
 import { LINE_START_HINT, LINE_IDLE_HINT } from '../../audio/villageScript.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -253,6 +253,6 @@ export const traceGame = {
     armIdle();
 
     // 틀리는 일이 없어서 엔진이 힌트를 부르지 않는다. 힌트는 위의 가만있기 안내가 맡는다.
-    return { n, prompt: `숫자 ${n}${josa(n, '을', '를')} 따라 써 봐! 초록 점부터 시작해.`, hint: async () => {} };
+    return { n, prompt: tracePrompt(n), hint: async () => {} };
   },
 };

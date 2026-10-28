@@ -2,17 +2,9 @@
 import { pickNumber, nearChoices, pickOne } from '@공통/games/logic.js';
 import { makeChoiceGame } from '../choice.js';
 import { bundles, tapToCountBundles } from '../visuals.js';
-import { cnt } from '../say.js';
+import { fruitPrompt, fruitHint, FRUITS } from '../../audio/step3Script.js';
 import { balloonGame } from './balloon.js';
 import { traceGame } from './trace.js';
-
-// [그림 이름, 과일 이름, 붙는 말(이/가)]
-const FRUITS = [
-  ['fruit-apple', '사과', '가'],
-  ['fruit-strawberry', '딸기', '가'],
-  ['fruit-orange', '귤', '이'],
-  ['fruit-grape', '포도', '가'],
-];
 
 const fruitGame = makeChoiceGame({
   key: 'fruit',
@@ -31,8 +23,8 @@ const fruitGame = makeChoiceGame({
       options: nearChoices(answer, 10, 20),
       scene,
       setup: (ctx) => tapToCountBundles(scene, ctx),
-      prompt: `${name}${particle} 모두 몇 개일까? 묶음부터 눌러서 세어 봐!`,
-      hintText: answer === 20 ? '열 개 묶음이 두 개, 모두 스무 개야!' : `열 개 묶음 하나하고 낱개 ${cnt(answer - 10)}, 모두 ${cnt(answer)}야!`,
+      prompt: fruitPrompt(name, particle),
+      hintText: fruitHint(answer),
     };
   },
 });

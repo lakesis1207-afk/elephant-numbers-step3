@@ -1,6 +1,7 @@
 import { describe, test, expect } from 'vitest';
 import { VOICE_LINES, voiceIdOf } from '../../src/audio/voiceLines.js';
 import * as script from '../../src/audio/script.js';
+import * as step3 from '../../src/audio/step3Script.js';
 import { NATIVE, PRAISE } from '@공통/games/logic.js';
 import { RETRY_TEXT, IDLE_TEXT } from '@공통/games/engine.js';
 import { MISSIONS } from '../../src/app/playtime.js';
@@ -26,14 +27,15 @@ describe('음성 목록', () => {
     expect(voiceIdOf(script.WARN_TEXT)).toBeTruthy();
   });
 
-  test('게임 문제와 힌트는 나올 수 있는 수만큼 모두 들어 있다', () => {
-    for (let n = 1; n <= 10; n++) expect(voiceIdOf(script.fruitHintEnd(n))).toBeTruthy();
-    for (let n = 1; n <= 6; n++) {
-      expect(voiceIdOf(script.pondPrompt(n))).toBeTruthy();
-      expect(voiceIdOf(script.spotsHintEnd(n))).toBeTruthy();
+  test('3단계 게임 문제와 힌트는 나올 수 있는 수만큼 모두 들어 있다', () => {
+    for (let total = 5; total <= 10; total++) {
+      for (let have = 1; have < total; have++) expect(voiceIdOf(step3.gatherPrompt(have, total))).toBeTruthy();
     }
-    for (let k = 2; k <= 8; k++) expect(voiceIdOf(script.pondTooMany(k))).toBeTruthy();
-    expect(voiceIdOf(script.fruitPrompt('귤', '이'))).toBe('fruit-q-orange');
+    for (let n = 10; n <= 50; n++) expect(voiceIdOf(step3.tracePrompt(n))).toBeTruthy();
+    for (let n = 11; n <= 50; n++) expect(voiceIdOf(step3.eggsHint(n))).toBeTruthy();
+    expect(voiceIdOf(step3.addEq(3, 7))).toBe('s3-add-eq-3-7');
+    expect(voiceIdOf(step3.subStory(8, 3))).toBe('s3-sub-q-8-3');
+    expect(voiceIdOf(step3.fruitPrompt('귤', '이'))).toBe('s3-fruit-q-orange');
   });
 
   test('스티커·잠금 문장도 들어 있다', () => {

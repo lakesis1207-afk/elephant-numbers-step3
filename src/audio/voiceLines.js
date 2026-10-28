@@ -8,15 +8,9 @@ import { MISSIONS } from '../app/playtime.js';
 import { SAVANNA } from '../villages/savanna.js';
 import { VILLAGES } from '../villages/index.js';
 import { villageVoiceLines } from './villageVoiceLines.js';
+import { step3VoiceLines } from './step3VoiceLines.js';
 
-const MAX_COUNT = 10; // 과일 최대 10개, 하마 최대 8마리
-const MAX_POND = 6; // 하마 목표 최대
-const MAX_SPOTS = 6;
-const MAX_HIPPOS = 8;
-const FRUITS = [
-  ['apple', '사과', '가'], ['strawberry', '딸기', '가'], ['orange', '귤', '이'],
-  ['banana', '바나나', '가'], ['grape', '포도', '가'], ['peach', '복숭아', '가'],
-];
+const MAX_COUNT = 10; // 고유어 수 세기 (11부터는 step3VoiceLines.js)
 const SPECIAL = SAVANNA.special;
 // 특별 친구가 다른 마을 동물이면 이름 음성은 그 마을 묶음에서 이미 만든다 (중복 방지)
 const SPECIAL_IS_VILLAGE_ANIMAL = VILLAGES.some((v) => v.detail.animals.some((a) => a.key === SPECIAL.key));
@@ -42,24 +36,6 @@ function build() {
     line('칭찬·격려', 'retry', RETRY_TEXT),
     line('칭찬·격려', 'idle', IDLE_TEXT),
 
-    // 과일 세기
-    ...FRUITS.map(([key, name, particle]) => line('과일 세기', `fruit-q-${key}`, S.fruitPrompt(name, particle))),
-    line('과일 세기', 'fruit-hint', S.FRUIT_HINT_START),
-    ...range(1, MAX_COUNT).map((n) => line('과일 세기', `fruit-hint-${n}`, S.fruitHintEnd(n))),
-
-    // 물웅덩이 채우기
-    ...range(1, MAX_POND).map((n) => line('물웅덩이', `pond-q-${n}`, S.pondPrompt(n))),
-    ...range(1, MAX_POND).map((n) => line('물웅덩이', `pond-hint-${n}`, S.pondHintStart(n))),
-    line('물웅덩이', 'pond-empty', S.POND_EMPTY),
-    ...range(1, MAX_POND - 1).map((k) => line('물웅덩이', `pond-few-${k}`, S.pondTooFew(k))),
-    ...range(2, MAX_HIPPOS).map((k) => line('물웅덩이', `pond-many-${k}`, S.pondTooMany(k))),
-
-    // 반짝 무늬 보기
-    line('반짝 무늬', 'spots-look', S.SPOTS_LOOK),
-    line('반짝 무늬', 'spots-q', S.SPOTS_PROMPT),
-    line('반짝 무늬', 'spots-hint', S.SPOTS_HINT_START),
-    ...range(1, MAX_SPOTS).map((n) => line('반짝 무늬', `spots-hint-${n}`, S.spotsHintEnd(n))),
-
     // 동물 이름·스티커
     ...[...SAVANNA.animals, ...(SPECIAL_IS_VILLAGE_ANIMAL ? [] : [SPECIAL])].map((a) => line('동물·스티커', `name-${a.key}`, a.name)),
     ...SAVANNA.animals.flatMap((a) => [
@@ -80,6 +56,9 @@ function build() {
 
     // 숲속·바닷가·공룡·농장 마을 (새 묶음)
     ...villageVoiceLines(),
+
+    // 3단계 게임
+    ...step3VoiceLines(),
   ];
 }
 

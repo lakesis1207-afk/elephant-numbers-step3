@@ -2,9 +2,9 @@
 import { pickNumber, randInt, nearChoices, pickOne } from '@공통/games/logic.js';
 import { makeChoiceGame, withDistractors } from '../choice.js';
 import { pics, pair, bigText, column } from '../visuals.js';
-import { josa, sayEq, cnt } from '../say.js';
+import * as T from '../../audio/step3Script.js';
 
-// [가장 큰 수, 보여 주는 방식]
+// [가장 큰 수, 보여 주는 방식]. 음성 목록(step3VoiceLines.js)은 이야기 단계(pic·both) 8까지, 식 단계 10까지를 만든다
 const MATH_LEVELS = [
   [5, 'pic'],
   [8, 'both'],
@@ -37,11 +37,8 @@ const addGame = makeChoiceGame({
       answer: sum,
       options: nearChoices(sum, 1, 10),
       scene: showBy(mode, pair(pics(a, 'shell'), '+', pics(b, 'shell')), `${a} + ${b} = ?`),
-      prompt:
-        mode === 'eq'
-          ? `${a} 더하기 ${b}${josa(b, '은', '는')} 얼마일까?`
-          : `조개가 ${cnt(a)} 있었는데 ${cnt(b)}가 더 왔어. 모두 몇 개일까?`,
-      hintText: `${sayEq(a, '더하기', b, sum)}!`,
+      prompt: mode === 'eq' ? T.addEq(a, b) : T.addStory(a, b),
+      hintText: T.addHint(a, b),
     };
   },
 });
@@ -56,11 +53,8 @@ const subGame = makeChoiceGame({
       answer: left,
       options: nearChoices(left, 0, 10),
       scene: showBy(mode, pics(total, 'fish', b), `${total} − ${b} = ?`),
-      prompt:
-        mode === 'eq'
-          ? `${total} 빼기 ${b}${josa(b, '은', '는')} 얼마일까?`
-          : `물고기 ${cnt(total, '마리')} 중에 ${cnt(b, '마리')}가 헤엄쳐 갔어. 몇 마리 남았을까?`,
-      hintText: `${sayEq(total, '빼기', b, left)}!`,
+      prompt: mode === 'eq' ? T.subEq(total, b) : T.subStory(total, b),
+      hintText: T.subHint(total, b),
     };
   },
 });
@@ -83,8 +77,8 @@ const eqGame = makeChoiceGame({
         answer,
         options: withDistractors(answer, [`${total} + ${b} = ${total + b}`, `${total} − ${b} = ${left + 1}`, `${total} − ${b} = ${left - 1}`]),
         scene: pics(total, 'fish', b),
-        prompt: '그림에 맞는 식을 골라 봐!',
-        hintText: `물고기 ${cnt(total, '마리')}에서 ${cnt(b, '마리')}가 가면 ${cnt(left, '마리')}가 남아!`,
+        prompt: T.EQ_PROMPT,
+        hintText: T.eqSubHint(total, b),
       };
     }
     const { a, b, sum } = addQuestion(max);
@@ -94,8 +88,8 @@ const eqGame = makeChoiceGame({
       answer,
       options: withDistractors(answer, others.filter((s) => !/-\d|= 0$/.test(s))),
       scene: pair(pics(a, 'shell'), '+', pics(b, 'shell')),
-      prompt: '그림에 맞는 식을 골라 봐!',
-      hintText: `조개 ${cnt(a)}하고 ${cnt(b)}를 더하면 ${cnt(sum)}야!`,
+      prompt: T.EQ_PROMPT,
+      hintText: T.eqAddHint(a, b),
     };
   },
 });

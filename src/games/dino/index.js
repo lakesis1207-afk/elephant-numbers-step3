@@ -2,7 +2,7 @@
 import { pickNumber, randInt, nearChoices, pickOne } from '@공통/games/logic.js';
 import { makeChoiceGame, withDistractors } from '../choice.js';
 import { strip, board, footprints } from '../visuals.js';
-import { isIt } from '../say.js';
+import * as T from '../../audio/step3Script.js';
 
 const STEPS = 5; // 발자국 수
 
@@ -20,13 +20,12 @@ const stepsGame = makeChoiceGame({
     const seq = Array.from({ length: STEPS }, (_, i) => start + i * 10);
     const at = blank === 'end' ? STEPS - 1 : randInt(0, STEPS - 1);
     const answer = seq[at];
-    const hintText = at > 0 ? `${seq[at - 1]}에서 10 더 가면 ${isIt(answer)}!` : `${seq[1]}보다 10 작은 수는 ${isIt(answer)}!`;
     return {
       answer,
       options: withDistractors(answer, [answer - 10, answer + 10, answer - 1, answer + 1], 1, 59),
       scene: footprints(seq.map((v, i) => (i === at ? '?' : v))),
-      prompt: '공룡이 10씩 뛰어가! 물음표 자리에는 어떤 수가 올까?',
-      hintText,
+      prompt: T.STEPS_PROMPT,
+      hintText: at > 0 ? T.stepsHintNext(answer) : T.stepsHintFirst(answer),
     };
   },
 });
@@ -43,16 +42,16 @@ const plus1Game = makeChoiceGame({
     [1, 50, 'any'],
   ],
   build({ range: [lo, hi, d], last }) {
-    const dir = pickDir(d);
-    const answer = dir === 'big' ? pickNumber(lo + 1, hi, last) : pickNumber(lo, hi - 1, last);
-    const n = dir === 'big' ? answer - 1 : answer + 1;
-    const cells = dir === 'big' ? [n - 1, n, '?'].filter((c) => c !== 0) : ['?', n, n + 1];
+    const big = pickDir(d) === 'big';
+    const answer = big ? pickNumber(lo + 1, hi, last) : pickNumber(lo, hi - 1, last);
+    const n = big ? answer - 1 : answer + 1;
+    const cells = big ? [n - 1, n, '?'].filter((c) => c !== 0) : ['?', n, n + 1];
     return {
       answer,
       options: nearChoices(answer, 1, 50),
       scene: strip(cells),
-      prompt: dir === 'big' ? `${n}보다 하나 큰 수는 뭘까?` : `${n}보다 하나 작은 수는 뭘까?`,
-      hintText: dir === 'big' ? `${n} 바로 다음 수는 ${isIt(answer)}!` : `${n} 바로 앞의 수는 ${isIt(answer)}!`,
+      prompt: T.plus1Prompt(n, big),
+      hintText: T.plus1Hint(n, big),
     };
   },
 });
@@ -66,18 +65,15 @@ const plus10Game = makeChoiceGame({
     [1, 50, 'any'],
   ],
   build({ range: [lo, hi, d], last }) {
-    const dir = pickDir(d);
-    const n = dir === 'big' ? pickNumber(lo, Math.min(hi, 40), last) : pickNumber(Math.max(lo, 11), hi, last);
-    const answer = dir === 'big' ? n + 10 : n - 10;
+    const big = pickDir(d) === 'big';
+    const n = big ? pickNumber(lo, Math.min(hi, 40), last) : pickNumber(Math.max(lo, 11), hi, last);
+    const answer = big ? n + 10 : n - 10;
     return {
       answer,
-      options: withDistractors(answer, [answer + 1, answer - 1, dir === 'big' ? n + 1 : n - 1], 1, 50),
+      options: withDistractors(answer, [answer + 1, answer - 1, big ? n + 1 : n - 1], 1, 50),
       scene: board(n, answer),
-      prompt:
-        dir === 'big'
-          ? `${n}보다 10 큰 수는 뭘까? 숫자판에서 바로 아래 칸이야.`
-          : `${n}보다 10 작은 수는 뭘까? 숫자판에서 바로 위 칸이야.`,
-      hintText: `${n}보다 10 ${dir === 'big' ? '큰' : '작은'} 수는 ${isIt(answer)}! 바로 ${dir === 'big' ? '아래' : '위'} 칸이지.`,
+      prompt: T.plus10Prompt(n, big),
+      hintText: T.plus10Hint(n, big),
     };
   },
 });
